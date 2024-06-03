@@ -1,6 +1,7 @@
 # lib/department.py
 
 from __init__ import CURSOR, CONN
+# from employee import Employee
 
 
 class Department:
@@ -139,3 +140,21 @@ class Department:
 
         row = CURSOR.execute(sql, (name,)).fetchone()
         return cls.instance_from_db(row) if row else None
+
+
+    def employees(self): # employees that work for the department.
+# query the "employees" table for rows that contain a foreign key value that matches the current department's id.
+# map the row data to an Employee instance.
+        from employee import Employee
+        sql = """
+            SELECT *
+            FROM employees
+            WHERE department_id = ?
+        """
+
+        CURSOR.execute(sql, (self.id,),)
+
+        rows = CURSOR.fetchall()
+        return [
+            Employee.instance_from_db(row) for row in rows
+        ]
